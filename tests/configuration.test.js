@@ -36,7 +36,7 @@ test('PROS task entry points and hardware safety instructions are documented', (
   assert.match(source, /void initialize\(\)/);
   assert.match(readme, /600 RPM blue cartridge/);
   assert.match(readme, /ADI A\/B are three-wire outputs on the V5 brain, not Smart Ports 7\/8/);
-  assert.match(readme, /not bare solenoid coils directly/);
+  assert.match(readme, /Do not connect bare solenoid coils directly/);
   assert.match(readme, /L1` extends, `L2` retracts/);
   assert.match(readme, /R1` extends, `R2` retracts/);
 });
