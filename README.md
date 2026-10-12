@@ -1,29 +1,28 @@
 # PROS VEX V5 six-motor drivetrain + pneumatics
 
-Starter PROS project source for a VEX V5 robot using a six-motor, tank-style drivetrain and two independently controlled pneumatic outputs.
+Starter PROS source for a VEX V5 robot with a six-motor, tank-drive drivetrain and two independently controlled pneumatic outputs.
 
 ## Hardware map
 
-| Smart Port | Device | Configuration |
+| V5 connection | Device | Configuration |
 | --- | --- | --- |
-| 1, 2, 3 | Left drivetrain motors | 600 RPM blue cartridges; port 2 reversed |
-| 4, 5, 6 | Right drivetrain motors | 600 RPM blue cartridges; port 5 reversed |
-| 7 | Pneumatic solenoid 1 | Digital output; `L1` extends, `L2` retracts |
-| 8 | Pneumatic solenoid 2 | Digital output; `R1` extends, `R2` retracts |
+| Smart Port 1 | Left-front drive motor | 600 RPM blue cartridge, not reversed |
+| Smart Port 2 | Left-middle drive motor | 600 RPM blue cartridge, reversed |
+| Smart Port 3 | Left-rear drive motor | 600 RPM blue cartridge, not reversed |
+| Smart Port 4 | Right-front drive motor | 600 RPM blue cartridge, reversed |
+| Smart Port 5 | Right-middle drive motor | 600 RPM blue cartridge, not reversed |
+| Smart Port 6 | Right-rear drive motor | 600 RPM blue cartridge, reversed |
+| ADI A | Pneumatic valve control 1 | `L1` extends; `L2` retracts |
+| ADI B | Pneumatic valve control 2 | `R1` extends; `R2` retracts |
 
-Set the V5 Controller to the robot in PROS/ VEX field configuration. In driver control, controller sticks operate the drivetrain: left stick Y controls left side; right stick Y controls right side (tank drive). Each piston has dedicated extend and retract buttons. A newly started program assumes both pistons retracted.
+ADI A/B are three-wire outputs on the V5 brain, not Smart Ports 7/8. The program constructs the controller as the master (`E_CONTROLLER_MASTER`); pair/connect the physical V5 Controller to the brain in the VEX/PROS workflow. Left stick Y drives the left motor group, right stick Y drives the right motor group (tank control).
 
-**Pneumatics note:** ports 7 and 8 are three-wire digital outputs intended to drive compatible solenoid interfaces, not bare solenoid coils directly. Verify the pneumatic system, solenoid interface, pressure, and wiring against VEX hardware documentation before connecting. Change the port constants to match your actual robot. Never actuate an unmounted mechanism or put hands near a moving cylinder.
+Each pneumatic output is latched: press its extend or retract button to set the output; releasing the button does not change its state. If both buttons for one piston are pressed simultaneously, its previous output is retained. Both outputs initialize to false/retracted when program starts.
+
+**Pneumatics safety:** ADI A/B can only operate a compatible solenoid valve/interface within its electrical ratings. Do not connect bare solenoid coils directly. Confirm valve wiring, pneumatic pressure, and mechanism mounting with the hardware documentation before use. Keep hands clear of moving cylinders, and test with the robot safely supported.
 
 ## Build and deploy
 
-This is a PROS source starter, not a generated `.pros` project (this checkout had no existing project metadata or toolchain). Create a V5 project with the PROS CLI or VS Code PROS extension, then copy `include/main.h` and `src/main.cpp` into it and build/upload with that project. The code uses standard PROS V5 APIs. Confirm the installed PROS version supports the API and that all ports match the physical robot before enabling motors.
+This repository contains PROS source files, not a generated `.pros` project or an installed PROS toolchain. Create a V5 project with the PROS CLI or VS Code PROS extension, then place `include/main.h` and `src/main.cpp` in that project's matching folders. Build and upload from the configured PROS project. Confirm the PROS API/toolchain version and physical port wiring before enabling the robot.
 
-## Driver controls
-
-- Left stick Y: left drivetrain side
-- Right stick Y: right drivetrain side
-- L1 / L2: extend / retract piston 1
-- R1 / R2: extend / retract piston 2
-
-The motor groups use a 600 RPM cartridge and brake when joystick input returns to zero. Piston commands are latched: press the extend or retract button to set the output; releasing the button does not change its state. Pressing both buttons for a piston at once is ignored, preserving its prior state.
+Run the repository's source configuration checks with `node --test tests/configuration.test.js`. These verify source/configuration expectations; they do not replace a PROS build, hardware inspection, or robot test.
